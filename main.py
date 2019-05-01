@@ -7,7 +7,7 @@ load_dotenv()
 
 
 def main():
-    chat_id = 424079888
+    chat_id = os.getenv('CHAT_ID')
     bot = telegram.Bot(token=os.getenv('BOT_TOKEN'))
 
     while True:
