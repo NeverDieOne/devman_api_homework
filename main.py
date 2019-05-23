@@ -39,6 +39,8 @@ def main():
                 params['timestamp'] = response_json['timestamp_to_request']
         except requests.exceptions.ReadTimeout:
             continue
+        except requests.exceptions.ConnectionError:
+            continue
 
 
 if __name__ == '__main__':
