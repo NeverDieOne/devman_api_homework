@@ -3,8 +3,6 @@ import os
 import telegram
 from dotenv import load_dotenv
 
-load_dotenv()
-
 
 def main():
     chat_id = os.getenv('CHAT_ID')
@@ -17,11 +15,13 @@ def main():
         }
         params = {}
         try:
-            response = requests.get(url, headers=headers, params=params).json()
-            if response['status'] == 'found':
-                params['timestamp'] = response['last_attempt_timestamp']
+            response = requests.get(url, headers=headers, params=params)
+            response.raise_for_status()
+            response_json = response.json()
+            if response_json['status'] == 'found':
+                params['timestamp'] = response_json['last_attempt_timestamp']
 
-                new_attempt = response['new_attempts'][0]
+                new_attempt = response_json['new_attempts'][0]
                 is_negative = new_attempt['is_negative']
                 lesson_title = new_attempt['lesson_title']
                 lesson_url = f'https://dvmn.org{new_attempt["lesson_url"]}'
@@ -35,11 +35,12 @@ def main():
                                      text=f'Работа "{lesson_title}" проверена.\nПреподавателю всё понравилось!'
                                      f' Можно приступать к следующему заданию!\n{lesson_url}')
 
-            elif response['status'] == 'timeout':
-                params['timestamp'] = response['timestamp_to_request']
+            elif response_json['status'] == 'timeout':
+                params['timestamp'] = response_json['timestamp_to_request']
         except requests.exceptions.ReadTimeout:
             continue
 
 
 if __name__ == '__main__':
+    load_dotenv()
     main()
