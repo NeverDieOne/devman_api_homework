@@ -45,7 +45,6 @@ def main():
 
 
 if __name__ == '__main__':
-    logging.basicConfig(level=logging.DEBUG)
     load_dotenv()
     main()
-    logging.info('Бот запущен!')
+    logging.warning('Бот запущен!')
