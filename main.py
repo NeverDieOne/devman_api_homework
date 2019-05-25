@@ -2,6 +2,7 @@ import requests
 import os
 import telegram
 from dotenv import load_dotenv
+import logging
 
 
 def main():
@@ -46,3 +47,4 @@ def main():
 if __name__ == '__main__':
     load_dotenv()
     main()
+    logging.info('Бот запущен!')
