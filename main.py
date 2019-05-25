@@ -5,13 +5,13 @@ from dotenv import load_dotenv
 
 
 def main():
-    chat_id = os.getenv('CHAT_ID')
-    bot = telegram.Bot(token=os.getenv('BOT_TOKEN'))
+    chat_id = os.environ('CHAT_ID')
+    bot = telegram.Bot(token=os.environ('BOT_TOKEN'))
 
     while True:
         url = 'https://dvmn.org/api/long_polling/'
         headers = {
-            'Authorization': f"Token {os.getenv('DEV_TOKEN')}"
+            'Authorization': f"Token {os.environ('DEV_TOKEN')}"
         }
         params = {}
         try:
