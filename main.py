@@ -37,9 +37,15 @@ def main():
 
             elif response_json['status'] == 'timeout':
                 params['timestamp'] = response_json['timestamp_to_request']
-        except requests.exceptions.ReadTimeout:
+            5 / 0
+        except requests.exceptions.ReadTimeout as error:
+            logger.warning(error)
             continue
-        except requests.exceptions.ConnectionError:
+        except requests.exceptions.ConnectionError as error:
+            logger.warning(error)
+            continue
+        except ZeroDivisionError as error:
+            logger.warning(error)
             continue
 
 
