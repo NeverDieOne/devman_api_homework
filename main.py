@@ -56,12 +56,10 @@ def main():
 
             elif response_json['status'] == 'timeout':
                 params['timestamp'] = response_json['timestamp_to_request']
-        except requests.exceptions.ReadTimeout as error:
+        except (requests.exceptions.ReadTimeout, requests.exceptions.ConnectionError) as error:
             logger.warning(f"Бот упал с ошибкой: {error}")
             continue
-        except requests.exceptions.ConnectionError as error:
-            logger.warning(f"Бот упал с ошибкой: {error}")
-            continue
+
 
 if __name__ == '__main__':
     main()
