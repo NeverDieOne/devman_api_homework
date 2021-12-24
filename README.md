@@ -25,6 +25,10 @@ CHAT_ID=id чата в телеграм
 
 `python main.py`
 
+## Пример запуска Docker
+
+`docker run --env-file <path_to_env_file> neverdieone/devman_homework:latest`
+
 ## Цель проекта
 
 Код написан в образовательных целях на онлайн-курсе для веб-разработчиков [Dvmn.org](https://dvmn.org/modules/)
