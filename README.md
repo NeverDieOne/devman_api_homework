@@ -5,10 +5,19 @@
 
 ## Как установить
 
-Python3 должен быть уже установлен. Затем используйте `pip` (или `pip3`, есть конфликт с Python2) для установки зависимостей.
-`pip install -r requirements.txt`
+1. `git clone https://github.com/NeverDieOne/devman_api_homework.git`
+2. `cd devman_api_homework`
+3. `python -m venv venv`
+4. `. ./venv/bin/acitvate` (`venv/Scripts/Activate` on Windows)
+5. `pip install -r requirements.txt`
 
-Параметры `BOT_TOKEN`, `DEV_TOKEN` и `CHAT_ID` должны находится в файле `.env` рядом со скриптом.
+## Переменные окружения
+
+```python
+BOT_TOKEN=телеграм токен
+DEV_TOKEN=токен авторизации Devman
+CHAT_ID=id чата в телеграм
+```
 
 `CHAT_ID` можно узнать у специального бота `@userinfobot`.
 
