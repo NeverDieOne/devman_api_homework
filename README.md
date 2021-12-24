@@ -2,7 +2,6 @@
 
 Бот для запросов к Devman API о проверке домашнего задания.
 
-
 ## Как установить
 
 1. `git clone https://github.com/NeverDieOne/devman_api_homework.git`
