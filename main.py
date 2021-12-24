@@ -1,8 +1,25 @@
-import requests
+import logging
 import os
+import time
+from textwrap import dedent
+
+import requests
 import telegram
 from dotenv import load_dotenv
-import logging
+
+
+logger = logging.getLogger('Devman Logger')
+
+
+class LogsHandler(logging.Handler):
+    def __init__(self, bot, chat_id, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.bot = bot
+        self.chat_id = chat_id
+
+    def emit(self, record):
+        log_entry = self.format(record)
+        self.bot.send_message(chat_id=self.chat_id, text=log_entry)
 
 
 def main():
@@ -11,20 +28,8 @@ def main():
     bot = telegram.Bot(token=os.environ['BOT_TOKEN'])
     chat_id = os.environ['CHAT_ID']
 
-    class MyLogsHandler(logging.Handler):
-
-        def __init__(self, bot, *args, **kwargs):
-            super().__init__(*args, **kwargs)
-            self.bot = bot
-
-        def emit(self, record):
-            log_entry = self.format(record)
-            self.bot.send_message(chat_id=os.environ['CHAT_ID'],
-                                  text=log_entry)
-
-    logger = logging.getLogger('Devman Logger')
     logger.setLevel(logging.DEBUG)
-    logger.addHandler(MyLogsHandler(bot))
+    logger.addHandler(LogsHandler(bot, chat_id))
     logger.warning('Бот запущен!')
 
     while True:
@@ -36,29 +41,43 @@ def main():
         try:
             response = requests.get(url, headers=headers, params=params)
             response.raise_for_status()
-            response_json = response.json()
-            if response_json['status'] == 'found':
-                params['timestamp'] = response_json['last_attempt_timestamp']
+            review = response.json()
+            if review['status'] == 'found':
+                params['timestamp'] = review['last_attempt_timestamp']
 
-                new_attempt = response_json['new_attempts'][0]
+                new_attempt = review['new_attempts'][0]
                 is_negative = new_attempt['is_negative']
                 lesson_title = new_attempt['lesson_title']
                 lesson_url = f'https://dvmn.org{new_attempt["lesson_url"]}'
 
                 if is_negative:
-                    bot.send_message(chat_id=chat_id,
-                                     text=f'Работа "{lesson_title}" проверена.\n'
-                                     f'К сожалению, в работе были найдены ошибки.\n{lesson_url}')
+                    message = f"""\
+                    Работа "{lesson_title}" проверена.
+                    К сожалению, в работе были найдены ошибки.
+                    {lesson_url}
+                    """
                 else:
-                    bot.send_message(chat_id=chat_id,
-                                     text=f'Работа "{lesson_title}" проверена.\nПреподавателю всё понравилось!'
-                                     f' Можно приступать к следующему заданию!\n{lesson_url}')
+                    message = f"""\
+                    Работа "{lesson_title}" проверена.
+                    Преподавателю всё понравилось!
+                    Можно приступать к следующему заданию!
+                    {lesson_url}
+                    """
+                
+                bot.send_message(
+                    chat_id=chat_id,
+                    text=dedent(message),
+                    disable_web_page_preview=True
+                )
 
-            elif response_json['status'] == 'timeout':
-                params['timestamp'] = response_json['timestamp_to_request']
-        except (requests.exceptions.ReadTimeout, requests.exceptions.ConnectionError) as error:
-            logger.warning(f"Бот упал с ошибкой: {error}")
-            continue
+            elif review['status'] == 'timeout':
+                params['timestamp'] = review['timestamp_to_request']
+        except requests.exceptions.ReadTimeout:
+            pass
+        except requests.exceptions.ConnectionError:
+            time.sleep(60)
+        except requests.exceptions.HTTPError:
+            logger.exception('Something wrong with bot')
 
 
 if __name__ == '__main__':
