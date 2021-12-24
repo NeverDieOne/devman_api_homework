@@ -4,11 +4,26 @@
 
 ## Как установить
 
-1. `git clone https://github.com/NeverDieOne/devman_api_homework.git`
-2. `cd devman_api_homework`
-3. `python -m venv venv`
-4. `. ./venv/bin/acitvate` (`venv/Scripts/Activate` on Windows)
-5. `pip install -r requirements.txt`
+
+1. Клонируем репозиторий к себе:
+
+    `git clone https://github.com/NeverDieOne/devman_api_homework.git`
+
+2. Переходим в директорию проекта:
+
+    `cd devman_api_homework`
+
+3. Создаём виртуальное окружение:
+
+    `python -m venv venv`
+4. Активируем виртуальное окружение:
+
+    `. ./venv/bin/acitvate` (`venv/Scripts/Activate` on Windows)
+
+5. Устанавливаем необходимые зависимости:
+
+    `pip install -r requirements.txt`
+
 
 ## Переменные окружения
 
